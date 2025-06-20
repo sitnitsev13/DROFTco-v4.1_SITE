@@ -215,8 +215,6 @@
             transform: translateX(-50%);
             opacity: 0;
             transition: opacity 0.3s ease;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
         }
 
         .dropdown-content a {
@@ -239,6 +237,7 @@
 
         .dropdown:hover .dropdown-content {
             display: grid;
+            grid-template-columns: repeat(2, 1fr);
             opacity: 1;
         }
 
@@ -269,6 +268,17 @@
             color: #666;
             max-width: 800px;
             margin: 0 auto;
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .dropdown-content {
+                display: none;
+                grid-template-columns: repeat(2, 1fr);
+                min-width: 400px;
+            }
+            .dropdown:hover .dropdown-content {
+                display: grid;
+            }
         }
 
         @media (max-width: 768px) {
@@ -319,12 +329,16 @@
                 width: 100%;
                 height: 100%;
                 background-color: #fff;
-                display: flex;
+                display: none;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 transform: none;
                 opacity: 1;
+            }
+
+            .dropdown-content.active {
+                display: flex;
             }
 
             .dropdown-content a {
@@ -548,6 +562,8 @@
             productPage.style.display = 'block';
             startCarousel();
             document.getElementById('navbarNav').classList.remove('active');
+            document.getElementById('stationaryMenu').classList.remove('active');
+            document.getElementById('mobileMenu').classList.remove('active');
         }
 
         function startCarousel() {
@@ -605,12 +621,13 @@
 
         function toggleMobileDropdown(menuId) {
             const menu = document.getElementById(menuId);
-            if (menu.style.display === 'flex') {
-                menu.style.display = 'none';
+            const otherMenuId = menuId === 'stationaryMenu' ? 'mobileMenu' : 'stationaryMenu';
+            const otherMenu = document.getElementById(otherMenuId);
+            if (menu.classList.contains('active')) {
+                menu.classList.remove('active');
             } else {
-                document.getElementById('stationaryMenu').style.display = 'none';
-                document.getElementById('mobileMenu').style.display = 'none';
-                menu.style.display = 'flex';
+                otherMenu.classList.remove('active');
+                menu.classList.add('active');
             }
         }
 
@@ -625,11 +642,7 @@
                     }
                 });
                 if (!clickedOnButton) {
-                    menus.forEach(menu => {
-                        if (menu.style.display === 'flex') {
-                            menu.style.display = 'none';
-                        }
-                    });
+                    menus.forEach(menu => menu.classList.remove('active'));
                 }
             }
         });
